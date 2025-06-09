@@ -52,13 +52,13 @@ const createTrip = (req, res) => {
 
 // Delete a Trip
 const deleteTrip = (req, res) => {
-  const { itemId } = req.params;
+  const { tripId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+  if (!mongoose.Types.ObjectId.isValid(tripId)) {
     return res.status(BAD_REQUEST).send({ message: "Invalid item ID format" });
   }
 
-  return Trip.findById(itemId)
+  return Trip.findById(tripId)
     .orFail(() => {
       const error = new Error("Item ID not found");
       error.statusCode = NOT_FOUND;
@@ -82,24 +82,18 @@ const deleteTrip = (req, res) => {
 
 //Update a Trip
 const updateTrip = (req, res) => {
-  const { name, startDate, endDate, location, imageUrl, travel } = req.body;
-  const tripId = req.params.tripId;
-  const userId = req.user._id;
+  const { tripId } = req.params;
+  const owner = req.user._id;
   const updateData = req.body;
 
-  return Trip.findByIdAndUpdate(
-    { _id: tripId, owner: userId },
-    updateData,
-    {
-      name,
-      startDate,
-      endDate,
-      location,
-      imageUrl,
-      travel,
-    },
-    { new: true, runValidators: true }
-  )
+  if (!mongoose.Types.ObjectId.isValid(tripId)) {
+    return res.status(BAD_REQUEST).send({ message: "Invalid item ID format" });
+  }
+
+  return Trip.findOneAndUpdate({ _id: tripId, owner }, updateData, {
+    new: true,
+    runValidators: true,
+  })
     .then((trip) => {
       if (!trip) {
         return res.status(NOT_FOUND).send({ message: "Trip not found" });
