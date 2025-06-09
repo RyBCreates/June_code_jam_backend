@@ -19,10 +19,12 @@ const getTrips = (req, res) => {
     });
 };
 
-// Create a new Item
+// Create a new Trip
 const createTrip = (req, res) => {
   const { name, startDate, endDate, location, imageUrl, travel } = req.body;
   const owner = req.user._id;
+
+  console.log("Request body:", req.body);
 
   return Trip.create({
     name,
@@ -48,7 +50,7 @@ const createTrip = (req, res) => {
     });
 };
 
-// Delete an Item
+// Delete a Trip
 const deleteTrip = (req, res) => {
   const { itemId } = req.params;
 
@@ -78,8 +80,47 @@ const deleteTrip = (req, res) => {
     });
 };
 
+//Update a Trip
+const updateTrip = (req, res) => {
+  const { name, startDate, endDate, location, imageUrl, travel } = req.body;
+  const tripId = req.params.tripId;
+  const userId = req.user._id;
+  const updateData = req.body;
+
+  return Trip.findByIdAndUpdate(
+    { _id: tripId, owner: userId },
+    updateData,
+    {
+      name,
+      startDate,
+      endDate,
+      location,
+      imageUrl,
+      travel,
+    },
+    { new: true, runValidators: true }
+  )
+    .then((trip) => {
+      if (!trip) {
+        return res.status(NOT_FOUND).send({ message: "Trip not found" });
+      }
+      return res.send(trip);
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid data passed to update trip" });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error occurred on the server" });
+    });
+};
+
 module.exports = {
   getTrips,
   createTrip,
   deleteTrip,
+  updateTrip,
 };
