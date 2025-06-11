@@ -10,7 +10,11 @@ const app = express();
 const { PORT = 10000, DATABASE_URL } = process.env;
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://rybcreates.github.io",
+  })
+);
 
 app.post("/signup", createUser);
 app.post("/signin", loginUser);
@@ -18,10 +22,7 @@ app.post("/signin", loginUser);
 app.use("/", mainRouter);
 
 mongoose
-  .connect(DATABASE_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(DATABASE_URL)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
