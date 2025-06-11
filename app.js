@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./routes/index");
+const notesRouter = require("./routes/notes");
 const { loginUser, createUser } = require("./controllers/users");
 
 const app = express();
@@ -20,6 +21,7 @@ app.post("/signup", createUser);
 app.post("/signin", loginUser);
 
 app.use("/", mainRouter);
+app.use("/notes", notesRouter);
 
 mongoose
   .connect(DATABASE_URL)
