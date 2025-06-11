@@ -7,7 +7,9 @@ router.use("/users", userRouter);
 router.use("/trips", tripsRouter);
 
 router.use((req, res) => {
-  res.status(NOT_FOUND).json({ message: "Requested resource not found" });
+  res
+    .status(NOT_FOUND)
+    .json({ message: "Hello, You have made it to the backend" });
 });
 
 module.exports = router;
