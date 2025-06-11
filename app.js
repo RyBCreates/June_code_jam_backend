@@ -12,7 +12,7 @@ const { PORT = 10000, DATABASE_URL } = process.env;
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://rybcreates.github.io",
+    origin: ["https://rybcreates.github.io", "http://localhost:5173"],
   })
 );
 
