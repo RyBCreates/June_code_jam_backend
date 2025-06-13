@@ -8,7 +8,7 @@ const {
   updateTrip,
 } = require("../controllers/trips");
 
-router.get("/", auth, getTrips);
+router.get("/", getTrips);
 router.post("/", auth, createTrip);
 router.delete("/:tripId", auth, deleteTrip);
 router.patch("/:tripId", auth, updateTrip);
