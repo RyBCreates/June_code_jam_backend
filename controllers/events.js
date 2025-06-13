@@ -8,6 +8,19 @@ const {
   INTERNAL_SERVER_ERROR,
 } = require("../utils/errors");
 
+// Get all Events
+const getEvents = (req, res) => {
+  Event.find({})
+    .then((events) => res.send(events))
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
+    });
+};
+
+// Add Events to a Trip
 const addEventToTrip = (req, res) => {
   const { tripId } = req.params;
   const { name, location, startTime, endTime } = req.body;
@@ -49,5 +62,6 @@ const addEventToTrip = (req, res) => {
 };
 
 module.exports = {
+  getEvents,
   addEventToTrip,
 };
