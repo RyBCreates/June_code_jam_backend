@@ -6,14 +6,11 @@ const {
   createTrip,
   deleteTrip,
   updateTrip,
-  addEventToTrip,
 } = require("../controllers/trips");
 
-router.get("/", getTrips);
+router.get("/", auth, getTrips);
 router.post("/", auth, createTrip);
 router.delete("/:tripId", auth, deleteTrip);
 router.patch("/:tripId", auth, updateTrip);
-
-router.post("/:tripId/events", auth, addEventToTrip);
 
 module.exports = router;

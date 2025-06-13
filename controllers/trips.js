@@ -110,44 +110,9 @@ const updateTrip = (req, res) => {
     });
 };
 
-// Add an Event to a Trip
-const addEventToTrip = (req, res) => {
-  const { tripId } = req.params;
-  const { name, location, startTime, endTime } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(tripId)) {
-    return res.status(BAD_REQUEST).send({ message: "Invalid trip ID format" });
-  }
-
-  Trip.findById(tripId)
-    .orFail(() => {
-      const error = new Error("Trip not found");
-      error.statusCode = NOT_FOUND;
-      throw error;
-    })
-    .then((trip) => {
-      if (trip.owner.toString() !== req.user._id.toString()) {
-        return res
-          .status(FORBIDDEN)
-          .send({ message: "You are not authorized to modify this trip" });
-      }
-
-      const newEvent = { name, location, startTime, endTime };
-      trip.events.push(newEvent);
-
-      return trip.save().then((updatedTrip) => res.send(updatedTrip));
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(err.statusCode || INTERNAL_SERVER_ERROR)
-        .send({ message: err.message || "An error occurred on the server" });
-    });
-};
-
 module.exports = {
   getTrips,
   createTrip,
   deleteTrip,
   updateTrip,
-  addEventToTrip,
 };
