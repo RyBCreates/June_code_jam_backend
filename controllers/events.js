@@ -10,7 +10,13 @@ const {
 
 // Get all Events
 const getEvents = (req, res) => {
-  Event.find({})
+  const { tripId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(tripId)) {
+    return res.status(BAD_REQUEST).send({ message: "Invalid trip ID format" });
+  }
+
+  Event.find({ tripId })
     .then((events) => res.send(events))
     .catch((err) => {
       console.error(err);
